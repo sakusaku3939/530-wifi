@@ -1,4 +1,6 @@
 import pywifi
+import subprocess
+import platform
 import time
 from datetime import datetime
 
@@ -51,6 +53,10 @@ def scan_wifi_networks(interface, timeout=5):
 
 def main():
     try:
+        # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
+        if platform.system().lower() == 'linux':
+            subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
+
         wifi = pywifi.PyWiFi()
         interfaces = wifi.interfaces()
         if not interfaces:
