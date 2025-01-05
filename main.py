@@ -21,6 +21,7 @@ def scan_wifi_networks(interface, timeout=5):
         if not results:
             print(f"{datetime.now().isoformat(sep=' ', timespec='milliseconds')}: No networks found yet.")
             time.sleep(0.5)
+            # timeout秒まで0.5秒間隔で再スキャンし、結果が得られなかった場合は空リストを返す
             continue
         else:
             networks = [
@@ -66,6 +67,8 @@ def main():
                     print(f"SSID: {network['ssid']}, BSSID: {network['bssid']}, Signal: {network['signal']}")
             else:
                 print("No networks found.")
+
+            print("\n")
 
     except Exception as e:
         print(f"Unexpected error: {e}")
