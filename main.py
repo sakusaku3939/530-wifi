@@ -56,6 +56,7 @@ def main():
         # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
         if platform.system().lower() == 'linux':
             subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
+            time.sleep(0.5)
 
         wifi = pywifi.PyWiFi()
         interfaces = wifi.interfaces()
