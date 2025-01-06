@@ -13,7 +13,7 @@ def scan_wifi_networks(interface):
         if platform.system().lower() == 'linux':
             # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
             subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
-            time.sleep(1)
+            time.sleep(0.5)
         else:
             # Windowsなどの場合はPyWiFiのscan()メソッドを使う
             interface.scan()
@@ -59,19 +59,25 @@ def main():
             print("No Wi-Fi interfaces found.")
             return
 
-        interface = interfaces[-1]
-
+        interface = interfaces[-1]  # 最後のインターフェースを使う
         print(f"Scanning on interface: {interface.name()}\n")
-        networks = scan_wifi_networks(interface)
 
-        if networks:
-            print(f"Found {len(networks)} networks:")
-            for network in networks:
-                print(f"SSID: {network['ssid']}, BSSID: {network['bssid']}, Signal: {network['signal']}")
-        else:
-            print("No networks found.")
+        try:
+            # スキャンを5秒間隔で繰り返し実行
+            while True:
+                networks = scan_wifi_networks(interface)
 
-        print("\n")
+                if networks:
+                    print(f"Found {len(networks)} networks:")
+                    for network in networks:
+                        print(f"SSID: {network['ssid']}, BSSID: {network['bssid']}, Signal: {network['signal']}")
+                else:
+                    print("No networks found.")
+
+                print("\n")
+                time.sleep(5)
+        except KeyboardInterrupt:
+            print('!!FINISH!!')
 
     except Exception as e:
         print(f"Unexpected error: {e}")
