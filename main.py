@@ -10,14 +10,20 @@ def scan_wifi_networks(interface):
     指定されたインターフェースでWi-Fiネットワークをスキャンし、結果を返す。
     """
     try:
-        interface.scan()
+        if platform.system().lower() == 'linux':
+            # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
+            subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
+            time.sleep(1)
+        else:
+            # Windowsなどの場合はPyWiFiのscan()メソッドを使う
+            interface.scan()
     except Exception as e:
         print(f"Error while starting scan: {e}")
         return []
 
     networks = []
-
     results = interface.scan_results()
+
     if not results:
         print(f"{datetime.now().isoformat(sep=' ', timespec='milliseconds')}: No networks found yet.")
     else:
@@ -47,11 +53,6 @@ def scan_wifi_networks(interface):
 
 def main():
     try:
-        # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
-        if platform.system().lower() == 'linux':
-            subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
-            time.sleep(0.5)
-
         wifi = pywifi.PyWiFi()
         interfaces = wifi.interfaces()
         if not interfaces:
