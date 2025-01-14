@@ -1,5 +1,4 @@
 from gps3 import gps3
-import time
 
 
 def get_gps_data():
@@ -10,16 +9,14 @@ def get_gps_data():
 
     try:
         print("Receiving GPS data...")
-        while True:
-            for new_data in gps_socket:
-                if new_data:
-                    data_stream.unpack(new_data)
-                    latitude = data_stream.TPV['lat']
-                    longitude = data_stream.TPV['lon']
-                    time_gps = data_stream.TPV['time']
-                    print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
+        for new_data in gps_socket:
+            if new_data:
+                data_stream.unpack(new_data)
+                latitude = data_stream.TPV['lat']
+                longitude = data_stream.TPV['lon']
+                time_gps = data_stream.TPV['time']
+                print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
 
-            time.sleep(1)
     except KeyboardInterrupt:
         print('!!FINISH!!')
 
