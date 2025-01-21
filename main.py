@@ -84,6 +84,7 @@ def main():
                     print(f"Found {len(networks)} networks:")
                     for network in networks:
                         print(f"SSID: {network['ssid']}, BSSID: {network['bssid']}, Signal: {network['signal']}")
+                    print("-" * 20)
 
                     # GPSデータを取得
                     gps_data = gps.get_data()
@@ -95,7 +96,7 @@ def main():
                             print("No GPS data available.")
                             continue
 
-                        print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
+                        print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}\n")
 
                         # BSSIDをハッシュ化して16進数文字列に変換
                         hashed_bssid = [hashlib.sha256(network["bssid"].encode()).hexdigest() for network in

@@ -10,7 +10,7 @@ def publish(client, message):
 
     status = result[0]
     if status == 0:
-        print(f"Send `{message.decode()}` to topic `{topic}`")
+        print(f"MQTT Successfully send to topic `{topic}`")
     else:
         print(f"Fails to send message to topic `{topic}`")
 
