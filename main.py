@@ -105,18 +105,21 @@ def main():
                         networks_to_update = [network for network in networks if
                                               rssi_cache_map.get(network["bssid"], -100) < network["signal"]]
 
+                        # キャッシュを更新
+                        rssi_cache_map.update({network["bssid"]: network["signal"] for network in networks_to_update})
+
+                        if not networks_to_update:
+                            print("No new networks found.")
+                            continue
+
                         # BSSIDをハッシュ化して16進数文字列に変換
                         hashed_bssid = [hashlib.sha256(network["bssid"].encode()).hexdigest() for network in
                                         networks_to_update]
-
                         split_hashed_bssid = ",".join(hashed_bssid)
 
                         # MQTTブローカーに送信
                         message = f"{latitude},{longitude},{split_hashed_bssid}".encode("utf-8")
                         publish(client, message)
-
-                        # キャッシュを更新
-                        rssi_cache_map.update({network["bssid"]: network["signal"] for network in networks_to_update})
                     else:
                         print("No GPS data available.")
                 else:
