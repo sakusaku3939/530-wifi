@@ -75,6 +75,9 @@ def main():
         gps = GPS()
         gps.start()
 
+        # Wi-FI BSSIDとRSSIのキャッシュ
+        rssi_cache_map = {}
+
         try:
             # スキャンを5秒間隔で繰り返し実行
             while True:
@@ -98,14 +101,22 @@ def main():
 
                         print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}\n")
 
+                        # キャッシュに存在するRSSIよりも強い信号のみを送信
+                        networks_to_update = [network for network in networks if
+                                              rssi_cache_map.get(network["bssid"], -100) < network["signal"]]
+
                         # BSSIDをハッシュ化して16進数文字列に変換
                         hashed_bssid = [hashlib.sha256(network["bssid"].encode()).hexdigest() for network in
-                                        networks]
+                                        networks_to_update]
+
                         split_hashed_bssid = ",".join(hashed_bssid)
 
                         # MQTTブローカーに送信
                         message = f"{latitude},{longitude},{split_hashed_bssid}".encode("utf-8")
                         publish(client, message)
+
+                        # キャッシュを更新
+                        rssi_cache_map.update({network["bssid"]: network["signal"] for network in networks_to_update})
                     else:
                         print("No GPS data available.")
                 else:
