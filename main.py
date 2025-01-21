@@ -90,10 +90,15 @@ def main():
 
                     if gps_data:
                         latitude, longitude, time_gps = gps_data
+
+                        if latitude == 'n/a' or longitude == 'n/a':
+                            print("No GPS data available.")
+                            continue
+
                         print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
 
                         # BSSIDをハッシュ化して16進数文字列に変換
-                        hashed_bssid = [str(hashlib.sha256(network["bssid"].encode().hexdigest())) for network in
+                        hashed_bssid = [hashlib.sha256(network["bssid"].encode()).hexdigest() for network in
                                         networks]
                         split_hashed_bssid = ",".join(hashed_bssid)
 
