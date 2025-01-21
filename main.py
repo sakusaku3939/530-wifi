@@ -1,8 +1,14 @@
+import hashlib
+
 import pywifi
 import subprocess
 import platform
 import time
 from datetime import datetime
+
+from gps.gps import GPS
+from mqtt.mqtt_common import connect_mqtt, host, port
+from mqtt.publisher import publish
 
 
 def scan_wifi_networks(interface):
@@ -62,8 +68,15 @@ def main():
         interface = interfaces[-1]  # 最後のインターフェースを使う
         print(f"Scanning on interface: {interface.name()}\n")
 
+        # MQTTブローカーに接続
+        client = connect_mqtt(host, port)
+
+        # GPSデータを取得
+        gps = GPS()
+        gps.start()
+
         try:
-            # スキャンを5秒間隔で繰り返し実行
+            # スキャンを2秒間隔で繰り返し実行
             while True:
                 networks = scan_wifi_networks(interface)
 
@@ -71,16 +84,36 @@ def main():
                     print(f"Found {len(networks)} networks:")
                     for network in networks:
                         print(f"SSID: {network['ssid']}, BSSID: {network['bssid']}, Signal: {network['signal']}")
+
+                    # GPSデータを取得
+                    gps_data = gps.get_data()
+
+                    if gps_data:
+                        latitude, longitude, time_gps = gps_data
+                        print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
+
+                        # BSSIDをハッシュ化して16進数文字列に変換
+                        hashed_bssid = [str(hashlib.sha256(network["bssid"].encode().hexdigest())) for network in
+                                        networks]
+                        split_hashed_bssid = ",".join(hashed_bssid)
+
+                        # MQTTブローカーに送信
+                        message = f"{latitude},{longitude},{split_hashed_bssid}".encode("utf-8")
+                        publish(client, message)
+                    else:
+                        print("No GPS data available.")
                 else:
                     print("No networks found.")
 
                 print("\n")
-                time.sleep(5)
+                time.sleep(2)
         except KeyboardInterrupt:
             print('!!FINISH!!')
+            gps.close()
+            client.disconnect()
 
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"Error: {e}")
 
 
 if __name__ == "__main__":

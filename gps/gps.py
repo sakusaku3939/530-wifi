@@ -2,29 +2,39 @@ from gps3 import gps3
 import time
 
 
-def get_gps_data():
-    gps_socket = gps3.GPSDSocket()
-    data_stream = gps3.DataStream()
-    gps_socket.connect()
-    gps_socket.watch()
+class GPS:
+    def __init__(self):
+        self.gps_socket = gps3.GPSDSocket()
+        self.data_stream = gps3.DataStream()
 
-    try:
+    def start(self):
         print("Receiving GPS data...")
+        self.gps_socket.connect()
+        self.gps_socket.watch()
 
-        while True:
-            new_data = gps_socket.next()
-            if new_data:
-                data_stream.unpack(new_data)
-                latitude = data_stream.TPV['lat']
-                longitude = data_stream.TPV['lon']
-                time_gps = data_stream.TPV['time']
-                print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}")
+    def get_data(self):
+        new_data = self.gps_socket.next()
+        if new_data:
+            self.data_stream.unpack(new_data)
+            latitude = self.data_stream.TPV['lat']
+            longitude = self.data_stream.TPV['lon']
+            time_gps = self.data_stream.TPV['time']
+            return latitude, longitude, time_gps
 
-            time.sleep(1)
-
-    except KeyboardInterrupt:
-        print('!!FINISH!!')
+    def close(self):
+        self.gps_socket.close()
 
 
 if __name__ == '__main__':
-    get_gps_data()
+    gps = GPS()
+    gps.start()
+
+    try:
+        while True:
+            data = gps.get_data()
+            if data:
+                print(f"Latitude: {data[0]}, Longitude: {data[1]}, Time: {data[2]}")
+            time.sleep(1)
+    except KeyboardInterrupt:
+        gps.close()
+        print('!!FINISH!!')
