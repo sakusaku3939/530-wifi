@@ -10,6 +10,8 @@ from gps.gps import GPS
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
 
+SCAN_INTERVAL = 5
+
 
 def scan_wifi_networks(interface):
     """
@@ -98,6 +100,7 @@ def main():
 
                         if latitude == 'n/a' or longitude == 'n/a':
                             print("GPS data is N/A.")
+                            time.sleep(SCAN_INTERVAL)
                             continue
 
                         print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}\n")
@@ -111,6 +114,7 @@ def main():
 
                         if not networks_to_update:
                             print("No new networks found.")
+                            time.sleep(SCAN_INTERVAL)
                             continue
 
                         # BSSIDをハッシュ化して16進数文字列に変換
@@ -126,7 +130,7 @@ def main():
                 else:
                     print("No networks found.")
 
-                time.sleep(5)
+                time.sleep(SCAN_INTERVAL)
 
         except KeyboardInterrupt:
             print('!!FINISH!!')
