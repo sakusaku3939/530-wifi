@@ -100,7 +100,6 @@ def main():
 
                         if latitude == 'n/a' or longitude == 'n/a':
                             print("GPS data is N/A.")
-                            time.sleep(SCAN_INTERVAL)
                             continue
 
                         print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}\n")
