@@ -34,6 +34,7 @@ if __name__ == '__main__':
     try:
         while True:
             gps.start()
+            time.sleep(5)
             data = gps.get_data()
             if data:
                 lat, lng, t_gps = data
@@ -41,7 +42,6 @@ if __name__ == '__main__':
             else:
                 print("No new GPS data available.")
             gps.stop()
-            time.sleep(5)  # 他の処理も考慮して適切な間隔でループ
     except KeyboardInterrupt:
         gps.stop()
         print('!!FINISH!!')
