@@ -82,7 +82,6 @@ def main():
             # スキャンを5秒間隔で繰り返し実行
             while True:
                 print("\n")
-                time.sleep(5)
                 networks = scan_wifi_networks(interface)
 
                 if networks:
@@ -98,7 +97,7 @@ def main():
                         latitude, longitude, time_gps = gps_data
 
                         if latitude == 'n/a' or longitude == 'n/a':
-                            print("No GPS data available.")
+                            print("GPS data is N/A.")
                             continue
 
                         print(f"Latitude: {latitude}, Longitude: {longitude}, Time: {time_gps}\n")
@@ -126,6 +125,9 @@ def main():
                         print("No GPS data available.")
                 else:
                     print("No networks found.")
+
+                time.sleep(5)
+
         except KeyboardInterrupt:
             print('!!FINISH!!')
             gps.close()
