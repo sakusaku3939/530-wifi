@@ -93,7 +93,7 @@ def main():
                     print("-" * 20)
 
                     # GPSデータを取得
-                    gps_data = gps.get_data()
+                    gps_data = gps.get_latest_data()
 
                     if gps_data:
                         latitude, longitude, time_gps = gps_data
@@ -133,7 +133,7 @@ def main():
 
         except KeyboardInterrupt:
             print('!!FINISH!!')
-            gps.close()
+            gps.stop()
             client.disconnect()
 
     except Exception as e:
