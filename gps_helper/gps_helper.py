@@ -41,7 +41,7 @@ if __name__ == '__main__':
             else:
                 print("No new GPS data available.")
             gps.stop()
-            time.sleep(1)  # 他の処理も考慮して適切な間隔でループ
+            time.sleep(5)  # 他の処理も考慮して適切な間隔でループ
     except KeyboardInterrupt:
         gps.stop()
         print('!!FINISH!!')
