@@ -1,48 +1,15 @@
-import time
-from gps3 import gps3
+from time import sleep
 
+from gpsdclient import GPSDClient
 
-class GPS:
-    def __init__(self):
-        self.gps_socket = gps3.GPSDSocket()
-        self.data_stream = gps3.DataStream()
+# GPSDクライアントを初期化
+client = GPSDClient(host="127.0.0.1", port=2947)
 
-    def start(self):
-        print("Receiving GPS data...")
-        self.gps_socket.connect()
-        self.gps_socket.watch()
-
-    def get_data(self):
-        new_data = self.gps_socket.next()
-        if new_data:
-            self.data_stream.unpack(new_data)
-            latitude = self.data_stream.TPV['lat']
-            longitude = self.data_stream.TPV['lon']
-            time_gps = self.data_stream.TPV['time']
-            return latitude, longitude, time_gps
-
-    def stop(self):
-        self.gps_socket.close()
-
-
-if __name__ == '__main__':
-    # gps = GPS()
-
-    try:
-        gps_socket = gps3.GPSDSocket()
-        data_stream = gps3.DataStream()
-        gps_socket.connect()
-        gps_socket.watch()
-
-        for new_data in gps_socket:
-            if new_data:
-                data_stream.unpack(new_data)
-                print('time : ', data_stream.TPV['time'])
-                print('lat : ', data_stream.TPV['lat'])
-                print('lon : ', data_stream.TPV['lon'])
-                print('alt : ', data_stream.TPV['alt'])
-                print('speed : ', data_stream.TPV['speed'])
-
-    except KeyboardInterrupt:
-        # gps.stop()
-        print('!!FINISH!!')
+print("リアルタイムで緯度・経度を取得中...（Ctrl+Cで終了）")
+try:
+    for result in client.dict_stream():
+        if "lat" in result and "lon" in result:
+            print(f"緯度: {result['lat']}, 経度: {result['lon']}")
+        sleep(1)
+except KeyboardInterrupt:
+    print("終了しました。")
