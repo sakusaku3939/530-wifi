@@ -1,14 +1,11 @@
 import time
 from gps3 import gps3
-from queue import Queue
 
 
 class GPS:
     def __init__(self):
         self.gps_socket = gps3.GPSDSocket()
         self.data_stream = gps3.DataStream()
-        self.running = False
-        self.data_queue = Queue(maxsize=1)  # 最新データのみ保持
 
     def start(self):
         print("Receiving GPS data...")
@@ -29,19 +26,23 @@ class GPS:
 
 
 if __name__ == '__main__':
-    gps = GPS()
+    # gps = GPS()
 
     try:
-        while True:
-            gps.start()
-            time.sleep(5)
-            data = gps.get_data()
-            if data:
-                lat, lng, t_gps = data
-                print(f"Latitude: {lat}, Longitude: {lng}, Time: {t_gps}")
-            else:
-                print("No new GPS data available.")
-            gps.stop()
+        gps_socket = gps3.GPSDSocket()
+        data_stream = gps3.DataStream()
+        gps_socket.connect()
+        gps_socket.watch()
+
+        for new_data in gps_socket:
+            if new_data:
+                data_stream.unpack(new_data)
+                print('time : ', data_stream.TPV['time'])
+                print('lat : ', data_stream.TPV['lat'])
+                print('lon : ', data_stream.TPV['lon'])
+                print('alt : ', data_stream.TPV['alt'])
+                print('speed : ', data_stream.TPV['speed'])
+
     except KeyboardInterrupt:
-        gps.stop()
+        # gps.stop()
         print('!!FINISH!!')
