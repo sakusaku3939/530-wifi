@@ -1,7 +1,7 @@
 import gps
 
 # GPSセッションを開始
-session = gps.gps_helper(mode=gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
+session = gps.gps(mode=gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 print("リアルタイムで緯度・経度を取得中...（Ctrl+Cで終了）")
 try:
