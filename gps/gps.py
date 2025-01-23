@@ -58,8 +58,8 @@ if __name__ == '__main__':
         while True:
             data = gps.get_latest_data()
             if data:
-                lat, lng, time = data
-                print(f"Latitude: {lat}, Longitude: {lng}, Time: {time}")
+                lat, lng, t_gps = data
+                print(f"Latitude: {lat}, Longitude: {lng}, Time: {t_gps}")
             else:
                 print("No new GPS data available.")
             time.sleep(1)  # 他の処理も考慮して適切な間隔でループ
