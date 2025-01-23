@@ -40,7 +40,8 @@ class GPS:
         """キューから最新のGPSデータを取得する"""
         try:
             return self.data_queue.get_nowait()  # 最新データを取得
-        except Queue.Empty:
+        except Exception as e:
+            print(f"No GPS data available: {e}")  # エラーがあれば表示
             return None  # データがない場合はNoneを返す
 
     def stop(self):
