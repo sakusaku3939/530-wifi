@@ -8,8 +8,8 @@ client = GPSDClient(host="127.0.0.1", port=2947)
 print("リアルタイムで緯度・経度を取得中...（Ctrl+Cで終了）")
 try:
     for result in client.dict_stream():
+        # 常に最新の緯度・経度を表示
         if "lat" in result and "lon" in result:
             print(f"緯度: {result['lat']}, 経度: {result['lon']}")
-        sleep(1)
 except KeyboardInterrupt:
     print("終了しました。")
