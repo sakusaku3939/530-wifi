@@ -73,9 +73,16 @@ def main():
         # MQTTブローカーに接続
         client = connect_mqtt(host, port)
 
-        # GPSデータを取得
+        # GPSデータを初回取得
         gps = GPSHelper()
         gps.start()
+        data = gps.get_latest_data()
+        if data:
+            lat, lng, t_gps = data
+            print(f"Succeeded to get GPS data: Latitude: {lat}, Longitude: {lng}, Time: {t_gps}")
+        else:
+            print("No new GPS data available.")
+            return  # GPSデータがない場合は終了
 
         # Wi-FI BSSIDとRSSIのキャッシュ
         rssi_cache_map = {}
