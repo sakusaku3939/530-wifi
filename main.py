@@ -82,6 +82,8 @@ def main():
             print(f"Succeeded to get GPS data: Latitude: {lat}, Longitude: {lng}, Time: {t_gps}")
         else:
             print("No new GPS data available.")
+            gps.stop()
+            client.disconnect()
             return  # GPSデータがない場合は終了
 
         # Wi-FI BSSIDとRSSIのキャッシュ

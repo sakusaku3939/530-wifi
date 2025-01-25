@@ -45,8 +45,8 @@ class GPSHelper:
         while True:
             try:
                 return self.data_queue.get(timeout=2)  # データが来るまで最大2秒待つ
-            except Exception:
-                print("Waiting for GPS data...")
+            except Exception as e:
+                print(f"Waiting for GPS data...: ({e})")
                 continue
 
     def stop(self):
