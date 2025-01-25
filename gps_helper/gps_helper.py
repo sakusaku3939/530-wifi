@@ -31,11 +31,9 @@ class GPSHelper:
                     time_gps = self.data_stream.TPV.get('time', 'n/a')
 
                     # データが有効であり、更新されている場合のみキューに追加
-                    if latitude != 'n/a' and longitude != 'n/a' and (latitude != last_lat or longitude != last_lng):
-                        last_lat, last_lng = latitude, longitude
-                        if self.data_queue.full():  # キューが満杯の場合、古いデータを破棄
-                            self.data_queue.get()
-                        self.data_queue.put((latitude, longitude, time_gps))
+                    if self.data_queue.full():  # キューが満杯の場合、古いデータを破棄
+                        self.data_queue.get()
+                    self.data_queue.put((latitude, longitude, time_gps))
             except Exception as e:
                 print(f"Error retrieving GPS data: {e}")
             time.sleep(1)  # 次のデータ取得を待つ
