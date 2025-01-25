@@ -1,15 +1,18 @@
-from time import sleep
+import gps
 
-from gpsdclient import GPSDClient
-
-# GPSDクライアントを初期化
-client = GPSDClient(host="127.0.0.1", port=2947)
+# GPSセッションを開始
+session = gps.gps(mode=gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 print("リアルタイムで緯度・経度を取得中...（Ctrl+Cで終了）")
 try:
-    for result in client.dict_stream():
-        # 常に最新の緯度・経度を表示
-        if "lat" in result and "lon" in result:
-            print(f"緯度: {result['lat']}, 経度: {result['lon']}")
+    while True:
+        # 次のGPSデータを取得
+        report = session.next()
+        # 緯度・経度が含まれるTPVデータをチェック
+        if report['class'] == 'TPV':
+            if hasattr(report, 'lat') and hasattr(report, 'lon'):
+                print(f"緯度: {report.lat}, 経度: {report.lon}")
 except KeyboardInterrupt:
     print("終了しました。")
+except Exception as e:
+    print(f"エラーが発生しました: {e}")
