@@ -6,7 +6,7 @@ import platform
 import time
 from datetime import datetime
 
-from gps_helper.gps_helper import GPS
+from gps_helper.gps_helper import GPSHelper
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
 
@@ -74,7 +74,7 @@ def main():
         client = connect_mqtt(host, port)
 
         # GPSデータを取得
-        gps = GPS()
+        gps = GPSHelper()
         gps.start()
 
         # Wi-FI BSSIDとRSSIのキャッシュ
