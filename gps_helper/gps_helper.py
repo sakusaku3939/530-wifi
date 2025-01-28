@@ -20,7 +20,6 @@ class GPSHelper:
 
     def _read_data(self):
         """バックグラウンドでGPSデータを取得する"""
-        last_lat, last_lng = None, None  # 最後に取得した値を記録
         while self.running:
             try:
                 new_data = self.gps_socket.next()
