@@ -20,7 +20,7 @@ def scan_wifi_networks(interface):
     try:
         if platform.system().lower() == 'linux':
             # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
-            subprocess.run(["sudo", "wpa_cli", "scan"], check=True)
+            subprocess.run(["sudo", "wpa_cli", "-i", "wlan1", "scan"], check=True)
             time.sleep(0.5)
         else:
             # Windowsなどの場合はPyWiFiのscan()メソッドを使う
