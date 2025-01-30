@@ -11,6 +11,7 @@ from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
 
 SCAN_INTERVAL = 1
+INTERFACE_NAME = "wlan1"
 
 
 def scan_wifi_networks(interface):
@@ -20,7 +21,7 @@ def scan_wifi_networks(interface):
     try:
         if platform.system().lower() == 'linux':
             # Linuxの場合はwpa_supplicantでWi-Fiスキャンをトリガーしておく
-            subprocess.run(["sudo", "wpa_cli", "-i", "wlan1", "scan"], check=True)
+            subprocess.run(["sudo", "wpa_cli", "-i", INTERFACE_NAME, "scan"], check=True)
             time.sleep(0.5)
         else:
             # Windowsなどの場合はPyWiFiのscan()メソッドを使う
@@ -67,7 +68,13 @@ def main():
             print("No Wi-Fi interfaces found.")
             return
 
-        interface = interfaces[-1]  # 最後のインターフェースを使う
+        # wlan1を指定
+        interface = None
+        for i in interfaces:
+            if i.name() == INTERFACE_NAME:
+                interface = i
+                break
+
         print(f"Scanning on interface: {interface.name()}\n")
 
         # MQTTブローカーに接続
