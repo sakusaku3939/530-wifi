@@ -10,7 +10,7 @@ from gps_helper.gps_helper import GPSHelper
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
 
-SCAN_INTERVAL = 5
+SCAN_INTERVAL = 2
 
 
 def scan_wifi_networks(interface):
