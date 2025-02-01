@@ -7,10 +7,10 @@ import platform
 import time
 from datetime import datetime
 
-import running
 from gps_helper.gps_helper import GPSHelper
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
+from running import Running
 from system_log.system_log import log_system_usage
 
 SCAN_INTERVAL = 4
@@ -156,7 +156,7 @@ def main():
 
         except KeyboardInterrupt:
             print('!!FINISH!!')
-            running.is_run = False
+            Running.stop()
             gps.stop()
             client.disconnect()
             log_thread.join()
