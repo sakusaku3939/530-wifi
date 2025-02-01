@@ -1,4 +1,5 @@
 import hashlib
+import threading
 
 import pywifi
 import subprocess
@@ -9,6 +10,7 @@ from datetime import datetime
 from gps_helper.gps_helper import GPSHelper
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
+from system_log.system_log import log_system_usage
 
 SCAN_INTERVAL = 4
 INTERFACE_NAME = "wlan1"
@@ -62,6 +64,10 @@ def scan_wifi_networks(interface):
 
 def main():
     try:
+        # システムログを別スレッドで記録
+        log_thread = threading.Thread(target=log_system_usage, daemon=True)
+        log_thread.start()
+
         wifi = pywifi.PyWiFi()
         interfaces = wifi.interfaces()
         if not interfaces:
@@ -151,6 +157,7 @@ def main():
             print('!!FINISH!!')
             gps.stop()
             client.disconnect()
+            log_thread.join()
 
     except Exception as e:
         print(f"Error: {e}")

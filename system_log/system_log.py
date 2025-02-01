@@ -4,7 +4,7 @@ import csv
 from datetime import datetime
 
 # CSVファイル名
-csv_filename = f"log_system_monitor_{time.strftime('%Y%m%d_%H%M%S')}.csv"
+csv_filename = f"log_system_monitor/{time.strftime('%Y%m%d_%H%M%S')}.csv"
 
 
 # CSVヘッダーを書き込む（ファイルが存在しない場合のみ）
@@ -18,7 +18,7 @@ def initialize_csv():
 
 
 # ログの記録を開始
-def log_system_usage(interval=5):
+def log_system_usage(interval=1):
     initialize_csv()  # CSVのヘッダーを初期化
 
     try:
