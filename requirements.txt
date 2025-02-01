@@ -4,3 +4,4 @@ comtypes~=1.4.8
 gps3~=0.33.3
 setuptools~=68.2.0
 gpsdclient~=1.3.2
+psutil~=6.1.1
