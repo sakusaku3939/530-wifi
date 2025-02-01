@@ -4,7 +4,7 @@ import logging
 
 # ログの設定
 logging.basicConfig(
-    filename="system_monitor.log",
+    filename=f"log_system_monitor_{time.strftime('%Y%m%d_%H%M%S')}.log",
     level=logging.INFO,
     format="%(asctime)s - CPU: %(cpu_usage)s%% | RAM: %(ram_usage)s%% | Available RAM: %(available_ram)d MB",
 )
@@ -38,4 +38,4 @@ def log_system_usage(interval=5):
 
 
 if __name__ == "__main__":
-    log_system_usage(interval=5)
+    log_system_usage(interval=1)
