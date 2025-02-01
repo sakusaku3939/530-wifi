@@ -5,6 +5,8 @@ import time
 import csv
 from datetime import datetime
 
+import running
+
 # CSV出力
 csv_path = "log_system_monitor"
 os.makedirs(csv_path, exist_ok=True)
@@ -26,9 +28,7 @@ def log_system_usage(interval=1):
     initialize_csv()  # CSVのヘッダーを初期化
 
     try:
-        psutil.cpu_percent(interval=1)  # 最初の測定値を捨てる
-
-        while True:
+        while running.is_run():
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 現在時刻
             cpu_usage = psutil.cpu_percent(interval=1)  # CPU 使用率
             cpu_freq = psutil.cpu_freq().current  # CPU周波数 (MHz)

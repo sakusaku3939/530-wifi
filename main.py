@@ -7,6 +7,7 @@ import platform
 import time
 from datetime import datetime
 
+import running
 from gps_helper.gps_helper import GPSHelper
 from mqtt.mqtt_common import connect_mqtt, host, port
 from mqtt.publisher import publish
@@ -155,6 +156,7 @@ def main():
 
         except KeyboardInterrupt:
             print('!!FINISH!!')
+            running.is_run = False
             gps.stop()
             client.disconnect()
             log_thread.join()
