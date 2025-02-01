@@ -1,16 +1,18 @@
+import os
+
 import psutil
 import time
 import csv
 from datetime import datetime
 
 # CSVファイル名
-csv_filename = f"log_system_monitor/{time.strftime('%Y%m%d_%H%M%S')}.csv"
+csv_filename =  os.path.join("log_system_monitor", f"{time.strftime('%Y%m%d_%H%M%S')}.csv")
 
 
 # CSVヘッダーを書き込む（ファイルが存在しない場合のみ）
 def initialize_csv():
     try:
-        with open(csv_filename, "x", newline="") as f:
+        with open(csv_filename, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["timestamp", "cpu_usage", "cpu_freq_mhz", "ram_usage", "available_ram"])
     except FileExistsError:
