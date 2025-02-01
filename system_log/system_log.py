@@ -1,37 +1,45 @@
 import psutil
 import time
-import logging
+import csv
+from datetime import datetime
 
-# ログの設定
-logging.basicConfig(
-    filename=f"log_system_monitor_{time.strftime('%Y%m%d_%H%M%S')}.log",
-    level=logging.INFO,
-    format="%(asctime)s - CPU: %(cpu_usage)s%% | RAM: %(ram_usage)s%% | Available RAM: %(available_ram)d MB",
-)
+# CSVファイル名
+csv_filename = f"log_system_monitor_{time.strftime('%Y%m%d_%H%M%S')}.csv"
 
 
-def log_system_usage(interval=5):
-    """
-    指定した間隔 (秒) ごとに CPU 負荷率と RAM の使用状況をログに記録する
-    """
+# CSVヘッダーを書き込む（ファイルが存在しない場合のみ）
+def initialize_csv():
     try:
+        with open(csv_filename, "x", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["timestamp", "cpu_usage", "cpu_freq_mhz", "ram_usage", "available_ram"])
+    except FileExistsError:
+        pass  # 既にファイルがある場合は何もしない
+
+
+# ログの記録を開始
+def log_system_usage(interval=5):
+    initialize_csv()  # CSVのヘッダーを初期化
+
+    try:
+        psutil.cpu_percent(interval=1)  # 最初の測定値を捨てる
+
         while True:
-            cpu_usage = psutil.cpu_percent(interval=1)  # CPU 使用率 (1秒間の平均)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # 現在時刻
+            cpu_usage = psutil.cpu_percent(interval=1)  # CPU 使用率
+            cpu_freq = psutil.cpu_freq().current  # CPU周波数 (MHz)
             ram_info = psutil.virtual_memory()
             ram_usage = ram_info.percent  # RAM 使用率
             available_ram = ram_info.available // (1024 * 1024)  # 利用可能なRAM (MB)
 
-            logging.info(
-                "",
-                extra={
-                    "cpu_usage": cpu_usage,
-                    "ram_usage": ram_usage,
-                    "available_ram": available_ram,
-                }
-            )
+            # CSVファイルに追記
+            with open(csv_filename, "a", newline="") as f:
+                writer = csv.writer(f)
+                writer.writerow([timestamp, cpu_usage, cpu_freq, ram_usage, available_ram])
 
-            print(f"CPU: {cpu_usage}% | RAM: {ram_usage}% | Available RAM: {available_ram} MB")
-            time.sleep(interval)  # 次の測定まで待機
+            print(
+                f"{timestamp} | CPU: {cpu_usage}% | Freq: {cpu_freq} MHz | RAM: {ram_usage}% | Available RAM: {available_ram} MB")
+            time.sleep(interval)
 
     except KeyboardInterrupt:
         print("\nログ記録を終了します。")
