@@ -5,8 +5,10 @@ import time
 import csv
 from datetime import datetime
 
-# CSVファイル名
-csv_filename =  os.path.join("log_system_monitor", f"{time.strftime('%Y%m%d_%H%M%S')}.csv")
+# CSV出力
+csv_path = "log_system_monitor"
+os.makedirs(csv_path, exist_ok=True)
+csv_filename =  os.path.join(csv_path, f"{time.strftime('%Y%m%d_%H%M%S')}.csv")
 
 
 # CSVヘッダーを書き込む（ファイルが存在しない場合のみ）
